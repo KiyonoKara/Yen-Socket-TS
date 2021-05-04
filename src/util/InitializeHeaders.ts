@@ -14,7 +14,7 @@ export class InitializeHeaders {
     constructor(public options: Partial<Options> = {}) {
         this.options = options || {};
         this.WSKey = GenerateKey.generateSecWebSocketKey(16, "base64");
-        this.wsURL = new URL(this.options?.url)!;
+        if (this.options.url) this.wsURL = new URL(this.options?.url)!;
     }
 
     /**
