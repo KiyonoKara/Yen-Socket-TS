@@ -23,6 +23,8 @@ class YenSocketTS extends EventEmitter {
         const WSOptions = IH.createOptions(url, headersWS);
 
         this.request = https.request(WSOptions);
+        // Ending the request is very important
+        this.request.end();
 
         this.request.on('upgrade', (response: http.IncomingMessage, socket: any, head: Buffer) => {
             // Ensure WebSocket connection has the sec-websocket-accept header
@@ -40,3 +42,5 @@ class YenSocketTS extends EventEmitter {
         });
     }
 }
+
+const YS = new YenSocketTS('wss://gateway.discord.gg:443?v=8&encoding=json');
