@@ -8,9 +8,11 @@ interface Options {
 
 export class InitializeHeaders {
     declare WSKey: string;
+    declare wsURL: URL;
     constructor(public options: Partial<Options> = {}) {
         this.options = options || {};
         this.WSKey = GenerateKey.generateSecWebSocketKey(16, "base64");
+        this.wsURL = new URL(this.options?.url)!;
     }
 
     initializeHeaders(url: string = this.options.url) {
@@ -25,4 +27,16 @@ export class InitializeHeaders {
         };
     };
 
+    createOptions(url: string = this.options.url, headers) {
+        const wsURL: URL = new URL(url);
+
+        return {
+            agent: false,
+            hostname: wsURL.hostname,
+            port: wsURL.port || Constants.DEFAULT_PORT,
+            method: "GET",
+            path: `${wsURL.pathname}${wsURL.search}`,
+            headers
+        };
+    }
 }
