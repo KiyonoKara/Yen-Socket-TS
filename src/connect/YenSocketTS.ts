@@ -67,6 +67,13 @@ class YenSocketTS extends EventEmitter {
             }
         });
     }
+
+    close(code: number = 1000, reason = "1000", masked = true) {
+        this.once('open', ({ socket }) => {
+            const close = FrameBuffer.closeFrame(code, reason, masked);
+            socket.write(close);
+        });
+    }
 }
 
 //const YS = new YenSocketTS('wss://gateway.discord.gg:443?v=8&encoding=json');
@@ -77,3 +84,5 @@ YS.on('open', () => {
 YS.on('message', m => {
     console.log(m);
 });
+
+YS.close()
