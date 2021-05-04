@@ -44,7 +44,7 @@ export class InitializeHeaders {
      * @param {string} url
      * @param {object} headers
      */
-    createOptions(url: string = this.options.url, headers) {
+    createOptions(url: string = this.options.url, headers = this.initializeHeaders(this.options.url)) {
         const wsURL: URL = new URL(url);
 
         return {
