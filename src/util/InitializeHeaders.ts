@@ -1,13 +1,7 @@
 import { URL } from "url";
 import * as GenerateKey from "./GenerateKey";
 import * as Constants from "./constants/Constants";
-
-/**
- * Options interface for the class' options parameter
- */
-interface Options {
-    [key: string]: any;
-}
+import { Options } from "./Interfaces";
 
 export class InitializeHeaders {
     declare WSKey: string;
