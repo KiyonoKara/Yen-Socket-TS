@@ -5,7 +5,7 @@ import { EventEmitter } from "events";
 import { InitializeHeaders } from "../util/InitializeHeaders";
 import { Options } from "../util/Interfaces";
 import { createExpectedKey } from "../util/GenerateKey";
-import { decode } from "../util/FrameBuffer";
+import * as FrameBuffer from "../util/FrameBuffer";
 import {BASE_BUFFER} from "../util/constants/Constants";
 
 class YenSocketTS extends EventEmitter {
@@ -46,7 +46,7 @@ class YenSocketTS extends EventEmitter {
             this.destroyed = socket.destroyed;
 
             const frameBuffer = null;
-            decode(socket, BASE_BUFFER, frameBuffer);
+            FrameBuffer.decode(socket, BASE_BUFFER, frameBuffer);
 
             socket.on('message', message => {
                 this.emit("message", JSON.stringify(message));
@@ -57,4 +57,5 @@ class YenSocketTS extends EventEmitter {
     }
 }
 
-const YS = new YenSocketTS('wss://gateway.discord.gg:443?v=8&encoding=json');
+//const YS = new YenSocketTS('wss://gateway.discord.gg:443?v=8&encoding=json');
+const YS = new YenSocketTS("wss://echo.websocket.org:443");
