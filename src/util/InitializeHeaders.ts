@@ -16,12 +16,13 @@ export class InitializeHeaders {
     initializeHeaders(url: string = this.options.url) {
         const wsURL: URL = new URL(url);
 
-        const headers = {
+        return {
             Host: `${wsURL.host}:${wsURL.port || Constants.DEFAULT_PORT}`,
             Connection: Constants.UPGRADE,
             Upgrade: "websocket",
             "Sec-WebSocket-Key":this.WSKey,
             "Sec-WebSocket-Version": Constants.WS_VERSION
         };
-    }
+    };
+
 }
