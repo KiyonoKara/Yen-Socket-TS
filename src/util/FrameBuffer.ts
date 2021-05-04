@@ -1,5 +1,39 @@
 import { BASE_BUFFER } from "./constants/Constants";
 
+export function generateMeta(fin, op, masked, payload) {
+    const length = payload.length;
+    const meta = Buffer.alloc(
+        2 + (length < 126 ? 0 : length < 65536 ? 2 : 8) + (masked ? 4 : 0)
+    );
+    meta[0] = (fin ? 128 : 0) + op;
+    meta[1] = masked ? 128 : 0;
+    let start = 2;
+    if (length < 126) {
+        meta[1] += length;
+    } else if (length < 65536) {
+        meta[1] += 126;
+        meta.writeUInt16BE(length, 2);
+        start += 2;
+    } else {
+        meta[1] += 127;
+        meta.writeUInt32BE(Math.floor(length / Math.pow(2, 32)), 2);
+        meta.writeUInt32BE(length % Math.pow(2, 32), 6);
+        start += 8;
+    }
+
+    if (masked) {
+        const mask = Buffer.alloc(4);
+        for (let i = 0; i < 4; i++) {
+            meta[start + i] = mask[i] = Math.floor(Math.random() * 256);
+        }
+        for (let i = 0; i < payload.length; i++) {
+            payload[i] ^= mask[i % 4];
+        }
+        //start += 4;
+    }
+    return meta;
+}
+
 export function decode(socket, buffer, frameBuffer = null) {
     this.socket = socket;
     buffer = BASE_BUFFER;
