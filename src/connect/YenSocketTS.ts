@@ -55,7 +55,24 @@ class YenSocketTS extends EventEmitter {
             this.socket = socket;
         });
     }
+
+    send(data) {
+        this.once('message', message => {
+            let msg = JSON.parse(message);
+            if (msg && msg.op === 10) {
+                return this.socket.write(FrameBuffer.messageFrame(data));
+            } else {
+                return this.socket.write(FrameBuffer.messageFrame(data));
+            }
+        });
+    }
 }
 
 //const YS = new YenSocketTS('wss://gateway.discord.gg:443?v=8&encoding=json');
-const YS = new YenSocketTS("wss://echo.websocket.org:443");
+const YS = new YenSocketTS("wss://demo.websocket.me/v3/channel_1?api_key=oCdCMcMPQpbvNjUIzqtvF1d2X2okWpDQj4AwARJuAgtjhzKxVEjQU6IdCjwm&notify_self");
+YS.on('open', () => {
+    YS.send(JSON.stringify({ data: "Test data" }));
+});
+YS.on('message', m => {
+    console.log(m);
+});
