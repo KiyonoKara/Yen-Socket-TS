@@ -1,6 +1,6 @@
 import { BASE_BUFFER } from "./constants/Constants";
 
-export function generateMeta(fin, op, masked, payload) {
+export function generateMeta(fin, op, masked, payload): Buffer {
     const length = payload.length;
     const meta = Buffer.alloc(
         2 + (length < 126 ? 0 : length < 65536 ? 2 : 8) + (masked ? 4 : 0)
