@@ -6,14 +6,14 @@ import { InitializeHeaders } from "../util/InitializeHeaders";
 import { Options } from "../util/Interfaces";
 import { createExpectedKey } from "../util/GenerateKey";
 
-const IH = new InitializeHeaders();
-
 class YenSocketTS extends EventEmitter {
     declare url: string;
     declare request: http.ClientRequest;
 
     constructor(url, public options: Partial<Options> = {}) {
         super(url);
+
+        const IH = new InitializeHeaders();
 
         this.options = options || {};
 
