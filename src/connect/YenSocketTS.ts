@@ -5,6 +5,8 @@ import { EventEmitter } from "events";
 import { InitializeHeaders } from "../util/InitializeHeaders";
 import { Options } from "../util/Interfaces";
 import { createExpectedKey } from "../util/GenerateKey";
+import { decode } from "../util/FrameBuffer";
+import {BASE_BUFFER} from "../util/constants/Constants";
 
 class YenSocketTS extends EventEmitter {
     declare url: string;
@@ -24,6 +26,7 @@ class YenSocketTS extends EventEmitter {
         const headersWS = IH.initializeHeaders(url);
         const WSOptions = IH.createOptions(url, headersWS);
 
+        // Opens the handshake
         this.request = https.request(WSOptions);
         // Ending the request is very important
         this.request.end();
@@ -43,7 +46,7 @@ class YenSocketTS extends EventEmitter {
             this.destroyed = socket.destroyed;
 
             const frameBuffer = null;
-
+            decode(socket, BASE_BUFFER, frameBuffer);
 
             socket.on('message', message => {
                 this.emit("message", JSON.stringify(message));
