@@ -2,6 +2,9 @@ import { URL } from "url";
 import * as GenerateKey from "./GenerateKey";
 import * as Constants from "./constants/Constants";
 
+/**
+ * Options interface for the class' options parameter
+ */
 interface Options {
     [key: string]: any;
 }
@@ -9,12 +12,21 @@ interface Options {
 export class InitializeHeaders {
     declare WSKey: string;
     declare wsURL: URL;
+
+    /**
+     * Options parameter that takes JSON objects
+     * @param {Partial<Options>} options
+     */
     constructor(public options: Partial<Options> = {}) {
         this.options = options || {};
         this.WSKey = GenerateKey.generateSecWebSocketKey(16, "base64");
         this.wsURL = new URL(this.options?.url)!;
     }
 
+    /**
+     * Breaks down the URL and creates headers specifically for the WebSocket connection
+     * @param {string} url - Defaults to the constructor's url from the options
+     */
     initializeHeaders(url: string = this.options.url) {
         const wsURL: URL = new URL(url);
 
@@ -27,6 +39,11 @@ export class InitializeHeaders {
         };
     };
 
+    /**
+     * Creates request options for the request
+     * @param {string} url
+     * @param {object} headers
+     */
     createOptions(url: string = this.options.url, headers) {
         const wsURL: URL = new URL(url);
 
