@@ -1,6 +1,5 @@
 import * as https from "https";
 import * as http from "http";
-import * as http2 from "http2";
 import { EventEmitter } from "events";
 import { InitializeHeaders } from "../util/InitializeHeaders";
 import { Options } from "../util/Interfaces";
@@ -15,6 +14,7 @@ class YenSocketTS extends EventEmitter {
     declare destroyed: boolean;
 
     private socket: any;
+    private head: Buffer;
 
     constructor(url, public options: Partial<Options> = {}) {
         super(url);
@@ -53,6 +53,7 @@ class YenSocketTS extends EventEmitter {
             });
 
             this.socket = socket;
+            this.head = head;
         });
     }
 
