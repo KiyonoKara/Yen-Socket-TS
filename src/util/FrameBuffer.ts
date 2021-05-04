@@ -34,6 +34,13 @@ export function generateMeta(fin, op, masked, payload): Buffer {
     return meta;
 }
 
+export function messageFrame(data): Buffer {
+    const payload = Buffer.from(data);
+    const meta = generateMeta(true, 1, true, payload);
+
+    return Buffer.concat([meta, payload], meta.length + payload.length);
+}
+
 export function decode(socket, buffer, frameBuffer = null) {
     this.socket = socket;
     buffer = BASE_BUFFER;
