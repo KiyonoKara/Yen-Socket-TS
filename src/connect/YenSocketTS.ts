@@ -12,6 +12,8 @@ class YenSocketTS extends EventEmitter {
 
     declare destroyed: boolean;
 
+    private socket: any;
+
     constructor(url, public options: Partial<Options> = {}) {
         super(url);
 
@@ -39,6 +41,15 @@ class YenSocketTS extends EventEmitter {
 
             this.emit("open", ({ response, socket }));
             this.destroyed = socket.destroyed;
+
+            const frameBuffer = null;
+
+
+            socket.on('message', message => {
+                this.emit("message", JSON.stringify(message));
+            });
+
+            this.socket = socket;
         });
     }
 }
