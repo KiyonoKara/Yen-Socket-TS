@@ -41,6 +41,18 @@ export function messageFrame(data): Buffer {
     return Buffer.concat([meta, payload], meta.length + payload.length);
 }
 
+export function closeFrame(code, reason, masked): Buffer {
+    let payload = BASE_BUFFER;
+    let meta = generateMeta(true, 0x08, !!masked, payload);
+
+    if (code && code !== 1005) {
+        payload = Buffer.from(!reason ? "--" : "--" + reason);
+        payload.writeUInt16BE(code, 0);
+    }
+
+    return Buffer.concat([meta, payload], meta.length + payload.length);
+}
+
 export function decode(socket, buffer, frameBuffer = null) {
     this.socket = socket;
     buffer = BASE_BUFFER;
