@@ -5,7 +5,7 @@ import { InitializeHeaders } from "../util/InitializeHeaders";
 import { Options } from "../util/Interfaces";
 import { createExpectedKey } from "../util/GenerateKey";
 import * as FrameBuffer from "../util/FrameBuffer";
-import {BASE_BUFFER} from "../util/constants/Constants";
+import { BASE_BUFFER } from "../util/constants/Constants";
 
 class YenSocketTS extends EventEmitter {
     declare url: string;
