@@ -10,6 +10,8 @@ class YenSocketTS extends EventEmitter {
     declare url: string;
     declare request: http.ClientRequest;
 
+    declare destroyed: boolean;
+
     constructor(url, public options: Partial<Options> = {}) {
         super(url);
 
@@ -32,6 +34,9 @@ class YenSocketTS extends EventEmitter {
             if (response.headers["sec-websocket-accept"] !== expectedKey) {
                 throw new Error("The sec-websocket-accept header returned a mismatched key.");
             }
+
+            this.emit("open", ({ response, socket }));
+            this.destroyed = socket.destroyed;
         });
     }
 }
