@@ -1,7 +1,7 @@
 import * as https from "https";
 import * as http from "http";
 import { EventEmitter } from "events";
-import { InitializeHeaders } from "../util/InitializeHeaders";
+import { HandleURL } from "../util/HandleURL";
 import { Options } from "../util/Interfaces";
 import { createExpectedKey } from "../util/GenerateKey";
 import * as FrameBuffer from "../util/FrameBuffer";
@@ -19,7 +19,7 @@ class YenSocketTS extends EventEmitter {
     constructor(url, public options: Partial<Options> = {}) {
         super(url);
 
-        const IH = new InitializeHeaders();
+        const IH = new HandleURL();
 
         this.options = options || {};
 
@@ -76,8 +76,8 @@ class YenSocketTS extends EventEmitter {
     }
 }
 
-//const YS = new YenSocketTS('wss://gateway.discord.gg:443?v=8&encoding=json');
-const YS = new YenSocketTS("wss://demo.websocket.me/v3/channel_1?api_key=oCdCMcMPQpbvNjUIzqtvF1d2X2okWpDQj4AwARJuAgtjhzKxVEjQU6IdCjwm&notify_self");
+const YS = new YenSocketTS('wss://gateway.discord.gg:443?v=8&encoding=json');
+//const YS = new YenSocketTS("wss://demo.websocket.me/v3/channel_1?api_key=oCdCMcMPQpbvNjUIzqtvF1d2X2okWpDQj4AwARJuAgtjhzKxVEjQU6IdCjwm&notify_self");
 YS.on('open', () => {
     YS.send(JSON.stringify({ data: "Test data" }));
 });
@@ -85,4 +85,4 @@ YS.on('message', m => {
     console.log(m);
 });
 
-YS.close()
+YS.close();
