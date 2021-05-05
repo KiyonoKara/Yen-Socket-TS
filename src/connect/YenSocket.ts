@@ -142,8 +142,19 @@ class YenSocket extends EventEmitter {
 
     public close(code: number = 1000, reason?: string, masked: boolean = true) {
         if (this.CONNECTION_STATE === this.OPEN) {
-            return this.socket.write(FrameBuffer.closeFrame(code, reason || undefined, masked));
+            this.socket.write(FrameBuffer.closeFrame(code, reason || undefined, masked));
         }
+    }
+
+    public onclose(code: number = 1000, reason?: string, masked: boolean = true) {
+        this.on("message", () => {
+            this.close(code, reason, masked);
+        });
+        this.socket.on("close", () => this.emit('close'));
+    }
+
+    public destroy() {
+        return this.socket.destroyed ? [] : this.socket.destroy();
     }
 }
 
@@ -249,3 +260,4 @@ const payload = JSON.stringify({
 
 yenSocket.sendOnOpen(payload);
 
+//yenSocket.onclose(1000, undefined, true);
