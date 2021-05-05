@@ -61,7 +61,7 @@ class YenSocket extends EventEmitter {
         });
     }
 
-    initiateHandshake(host = this.WSOptions.hostname, key = handleURL.WSKey): void {
+    private initiateHandshake(host = this.WSOptions.hostname, key = handleURL.WSKey): void {
         let WebSocketHeaders;
         if (!this.WSHeaders) {
             WebSocketHeaders = {
@@ -79,7 +79,7 @@ class YenSocket extends EventEmitter {
         this.socket.write(requestString);
     }
 
-    createStrRequest(rawRequestLine, headers) {
+     private createStrRequest(rawRequestLine, headers) {
         let headersString = rawRequestLine + '\r\n';
 
         for (let key in headers) {
