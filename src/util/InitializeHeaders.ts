@@ -44,7 +44,7 @@ export class InitializeHeaders {
         return {
             agent: false,
             hostname: wsURL.hostname,
-            port: wsURL.port || Constants.DEFAULT_PORT,
+            port: (wsURL.port || Constants.DEFAULT_PORT) as number,
             method: "GET",
             path: `${wsURL.pathname}${wsURL.search}`,
             headers
