@@ -9,6 +9,7 @@ import * as FrameBuffer from "../util/FrameBuffer";
 import { BASE_BUFFER } from "../util/constants/Constants";
 import * as Constants from "../util/constants/Constants";
 import "../util/Utilities";
+import * as http from "http";
 
 const handleURL = new HandleURL();
 
@@ -55,6 +56,13 @@ class YenSocket extends EventEmitter {
             if (handshakeData && handshakeData[0]?.equals('HTTP/1.1 101 Switching Protocols')) {
                 noop();
             }
+        });
+
+        const frameBuffer = null;
+        FrameBuffer.decode(this.socket, BASE_BUFFER, frameBuffer);
+
+        this.socket.on("message", message => {
+            console.log(message);
         });
 
         this.socket.on("error", error => {
@@ -166,5 +174,10 @@ const validateHandshake = function(handshake: string[], wsKey?: string) {
 }
 
 const noop = function() {};
+
+export {
+    readHandshake,
+    noop
+};
 
 const yenSocket = new YenSocket("wss://gateway.discord.gg:443?v=8&encoding=json");
