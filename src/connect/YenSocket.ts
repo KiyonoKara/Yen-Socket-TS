@@ -9,6 +9,9 @@ import * as FrameBuffer from "../util/FrameBuffer";
 import { BASE_BUFFER } from "../util/constants/Constants";
 import * as Constants from "../util/constants/Constants";
 import "../util/Utilities";
+import * as util from "util";
+import * as stream from "stream";
+import * as http from "http";
 
 const handleURL = new HandleURL();
 
@@ -16,6 +19,22 @@ const modules = {
   "tls": tls,
   "net": net
 };
+
+function InStream() {
+    stream.Readable.call(this);
+}
+
+util.inherits(InStream, stream.Readable);
+
+InStream.prototype._read = function () {}
+
+InStream.prototype.addData = function (data) {
+    this.push(data)
+}
+
+InStream.prototype.end = function () {
+    this.push(null)
+}
 
 class YenSocket extends EventEmitter {
     declare socket: net.Socket;
@@ -33,12 +52,23 @@ class YenSocket extends EventEmitter {
         this.WSHeaders = handleURL.initializeHeaders(url);
         this.WSOptions = handleURL.createOptions(url, this.WSHeaders);
 
-        this.socket = modules[this.defineNETorTLS(this.url.protocol)].connect({ host: this.WSOptions.hostname, port: this.WSOptions.port });
+        this.socket = modules[this.defineNETorTLS(this.url.protocol)].connect({
+            host: this.WSOptions.hostname,
+            port: this.WSOptions.port
+        });
 
         this.path = this.WSOptions.path;
 
         this.socket.on("connect", () => {
-            this.initiateHandshake(this.WSOptions.hostname, this.WSHeaders["Sec-WebSocket-Key"])
+            this.initiateHandshake(this.WSOptions.hostname, this.WSHeaders["Sec-WebSocket-Key"]);
+        });
+
+        this.socket.on("readable", () => {
+            console.log(this.socket.read());
+        });
+
+        this.socket.on("error", error => {
+            console.log(error);
         });
     }
 
@@ -65,14 +95,10 @@ class YenSocket extends EventEmitter {
 
         for (let key in headers) {
             if (headers.hasOwnProperty(key)) {
-                if (Object.keys(headers).indexOf(key) === Object.keys(headers).length - 1) {
-                    headersString += `${key}: ${headers[key]}`;
-                } else {
-                    headersString += `${key}: ${headers[key]}\r\n`;
-                }
+                headersString += `${key}: ${headers[key]}\r\n`;
             }
         }
-        return headersString;
+        return headersString + "\r\n";
     }
 
     defineNETorTLS(protocol: string): string {
