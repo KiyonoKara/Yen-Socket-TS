@@ -37,7 +37,7 @@ class YenSocket extends EventEmitter {
         this.WSHeaders = handleURL.initializeHeaders(url);
         this.WSOptions = handleURL.createOptions(url, this.WSHeaders);
 
-        this.socket = modules[this.defineNETorTLS(this.url.protocol)].connect({
+        this.socket = modules[defineNETorTLS(this.url.protocol)].connect({
             host: this.WSOptions.hostname,
             port: this.WSOptions.port
         });
@@ -89,12 +89,12 @@ class YenSocket extends EventEmitter {
         }
         return headersString + "\r\n";
     }
-
-    defineNETorTLS(protocol: string): string {
-        if (protocol.equals("wss:")) return "tls";
-        else return "net";
-    }
 }
+
+const defineNETorTLS = function(protocol: string): string {
+    if (protocol.equals("wss:")) return "tls";
+    else return "net";
+};
 
 const readHandshake = function(buffer: Buffer, socket, cs?: YenSocket) {
     let found = false, i, data;
