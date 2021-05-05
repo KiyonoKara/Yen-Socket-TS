@@ -99,7 +99,14 @@ export function decode(socket, buffer, frameBuffer = null) {
                 payload = payload.toString();
                 frameBuffer = frameBuffer ? frameBuffer + payload : payload;
                 if (fin) {
-                    this.socket.emit("message", JSON.parse(frameBuffer));
+                    let message;
+                    try {
+                        message = JSON.parse(frameBuffer);
+                    } catch {
+                        message = frameBuffer;
+                    }
+
+                    this.socket.emit("message", message);
                     frameBuffer = null;
                 }
             }
