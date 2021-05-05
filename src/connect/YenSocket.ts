@@ -23,6 +23,7 @@ class YenSocket extends EventEmitter {
     declare path: string;
     declare url: URL;
     declare server: null;
+    declare destroyed: boolean;
 
     // Headers and request options
     declare WSHeaders;
@@ -40,11 +41,14 @@ class YenSocket extends EventEmitter {
             port: this.WSOptions.port
         });
 
+        this.destroyed = this.socket.destroyed;
+
         this.path = this.WSOptions.path;
 
         this.socket.on("connect", () => {
             this.initiateHandshake(this.WSOptions.hostname, this.WSHeaders["Sec-WebSocket-Key"]);
         });
+        console.log(this.socket);
 
         this.socket.once("readable", () => {
             const handshakeData = readHandshake(this.socket.read(), this.socket, this);
@@ -97,6 +101,10 @@ class YenSocket extends EventEmitter {
             }
         }
         return headersString + "\r\n";
+    }
+
+    public send(data) {
+
     }
 }
 
