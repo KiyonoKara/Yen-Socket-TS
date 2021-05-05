@@ -9,7 +9,6 @@ import * as FrameBuffer from "../util/FrameBuffer";
 import { BASE_BUFFER } from "../util/constants/Constants";
 import * as Constants from "../util/constants/Constants";
 import "../util/Utilities";
-import * as http from "http";
 
 const handleURL = new HandleURL();
 
@@ -79,7 +78,7 @@ class YenSocket extends EventEmitter {
 
         this.socket.on("message", message => {
             if (this.CONNECTION_STATE === this.OPEN) {
-                console.log(message);
+                this.emit("message", message);
             }
         });
 
@@ -203,3 +202,6 @@ export {
 };
 
 const yenSocket = new YenSocket("wss://gateway.discord.gg:443?v=8&encoding=json");
+yenSocket.on("message", message => {
+    console.log(message);
+});
