@@ -139,6 +139,12 @@ class YenSocket extends EventEmitter {
             }
         });
     }
+
+    public close(code: number = 1000, reason?: string, masked: boolean = true) {
+        if (this.CONNECTION_STATE === this.OPEN) {
+            return this.socket.write(FrameBuffer.closeFrame(code, reason || undefined, masked));
+        }
+    }
 }
 
 const defineNETorTLS = function(protocol: string): string {
