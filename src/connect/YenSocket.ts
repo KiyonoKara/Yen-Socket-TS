@@ -51,7 +51,10 @@ class YenSocket extends EventEmitter {
         });
 
         this.socket.on("data", data => {
-            //console.log(data.toString());
+            const handshakeData = readHandshake(data, this.socket, this);
+            if (handshakeData[0]?.equals('HTTP/1.1 101 Switching Protocols')) {
+                noop();
+            }
         });
 
         this.socket.on("error", error => {
@@ -161,5 +164,7 @@ const validateHandshake = function(handshake: string[], wsKey?: string) {
 
     return true;
 }
+
+const noop = function() {};
 
 const yenSocket = new YenSocket("wss://gateway.discord.gg:443?v=8&encoding=json");
