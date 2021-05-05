@@ -3,7 +3,7 @@ import * as GenerateKey from "./GenerateKey";
 import * as Constants from "./constants/Constants";
 import { Options } from "./Interfaces";
 
-export class InitializeHeaders {
+export class HandleURL {
     declare WSKey: string;
     declare wsURL: URL;
 
