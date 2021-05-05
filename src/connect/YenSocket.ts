@@ -99,7 +99,7 @@ class YenSocket extends EventEmitter {
 
         for (let key in headers) {
             if (headers.hasOwnProperty(key)) {
-                headersString += `${key}: ${headers[key]}\r\n`;
+                headersString += `${key}: ${headers[key]}` + `\r\n`;
             }
         }
         return headersString + "\r\n";
