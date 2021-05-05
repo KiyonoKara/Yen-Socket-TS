@@ -12,6 +12,11 @@ import "../util/Utilities";
 
 const handleURL = new HandleURL();
 
+const modules = {
+  "tls": tls,
+  "net": net
+};
+
 class YenSocket extends EventEmitter {
     declare socket: net.Socket;
     declare path: string;
@@ -28,11 +33,7 @@ class YenSocket extends EventEmitter {
         this.WSHeaders = handleURL.initializeHeaders(url);
         this.WSOptions = handleURL.createOptions(url, this.WSHeaders);
 
-        if (this.url.protocol.equals("wss:")) {
-            this.socket = tls.connect({ host: this.WSOptions.hostname, port: this.WSOptions.port });
-        } else {
-            this.socket = net.connect({ host: this.WSOptions.hostname, port: this.WSOptions.port });
-        }
+        this.socket = modules[this.defineNETorTLS(this.url.protocol)].connect({ host: this.WSOptions.hostname, port: this.WSOptions.port });
 
         this.path = this.WSOptions.path;
 
@@ -74,8 +75,9 @@ class YenSocket extends EventEmitter {
         return headersString;
     }
 
-    defineNETorTLS(protocol: string) {
-
+    defineNETorTLS(protocol: string): string {
+        if (protocol.equals("wss:")) return "tls";
+        else return "net";
     }
 }
 
