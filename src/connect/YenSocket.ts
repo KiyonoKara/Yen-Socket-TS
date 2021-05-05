@@ -8,6 +8,7 @@ import {createExpectedKey, generateSecWebSocketKey} from "../util/GenerateKey";
 import * as FrameBuffer from "../util/FrameBuffer";
 import { BASE_BUFFER } from "../util/constants/Constants";
 import * as Constants from "../util/constants/Constants";
+import "../util/Utilities";
 
 const handleURL = new HandleURL();
 
@@ -27,7 +28,12 @@ class YenSocket extends EventEmitter {
         this.WSHeaders = handleURL.initializeHeaders(url);
         this.WSOptions = handleURL.createOptions(url, this.WSHeaders);
 
-        this.socket = tls.connect({ host: this.WSOptions.hostname, port: this.WSOptions.port });
+        if (this.url.protocol.equals("wss:")) {
+            this.socket = tls.connect({ host: this.WSOptions.hostname, port: this.WSOptions.port });
+        } else {
+            this.socket = net.connect({ host: this.WSOptions.hostname, port: this.WSOptions.port });
+        }
+
         this.path = this.WSOptions.path;
 
         this.socket.on("connect", () => {
@@ -65,9 +71,12 @@ class YenSocket extends EventEmitter {
                 }
             }
         }
-
         return headersString;
+    }
+
+    defineNETorTLS(protocol: string) {
+
     }
 }
 
-const yenSocket = new YenSocket("ws://gateway.discord.gg:443?v=8&encoding=json");
+const yenSocket = new YenSocket("wss://gateway.discord.gg:443?v=8&encoding=json");
