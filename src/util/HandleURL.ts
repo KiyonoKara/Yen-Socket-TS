@@ -28,7 +28,7 @@ export class HandleURL {
             Host: `${wsURL.host}:${wsURL.port || Constants.DEFAULT_PORT}`,
             Connection: Constants.UPGRADE,
             Upgrade: "websocket",
-            "Sec-WebSocket-Key":this.WSKey,
+            "Sec-WebSocket-Key": this.WSKey,
             "Sec-WebSocket-Version": Constants.WS_VERSION
         };
     };
