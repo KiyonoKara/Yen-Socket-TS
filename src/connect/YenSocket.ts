@@ -25,6 +25,12 @@ class YenSocket extends EventEmitter {
     declare server: null;
     declare destroyed: boolean;
 
+    declare CONNECTING: number;
+    declare OPEN: number;
+    declare CLOSING: number;
+    declare CLOSED: number
+    declare CONNECTION_STATE: number;
+
     // Headers and request options
     declare WSHeaders;
     declare WSOptions;
@@ -43,12 +49,16 @@ class YenSocket extends EventEmitter {
 
         this.destroyed = this.socket.destroyed;
 
+        this.CONNECTING = 0;
+        this.OPEN = 1;
+        this.CLOSING = 2;
+        this.CLOSED = 3;
+
         this.path = this.WSOptions.path;
 
         this.socket.on("connect", () => {
             this.initiateHandshake(this.WSOptions.hostname, this.WSHeaders["Sec-WebSocket-Key"]);
         });
-        console.log(this.socket);
 
         this.socket.once("readable", () => {
             const handshakeData = readHandshake(this.socket.read(), this.socket, this);
