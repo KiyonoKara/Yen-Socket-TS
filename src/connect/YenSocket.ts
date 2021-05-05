@@ -119,19 +119,20 @@ class YenSocket extends EventEmitter {
     }
 
     public send(data, json: boolean = false) {
-        // if (this.CONNECTION_STATE === this.OPEN) {
-        //     if (json) {
-        //         if (typeof data === "object") {
-        //             console.log(2);
-        //             this.socket.write(FrameBuffer.messageFrame(JSON.stringify(data) || data.toString()));
-        //         } else {
-        //             this.socket.write(FrameBuffer.messageFrame(data));
-        //         }
-        //     } else {
-        //         this.socket.write(FrameBuffer.messageFrame(data));
-        //     }
-        // }
+        if (this.CONNECTION_STATE === this.OPEN) {
+            if (json) {
+                if (typeof data === "object") {
+                    this.socket.write(FrameBuffer.messageFrame(JSON.stringify(data) || data.toString()));
+                } else {
+                    this.socket.write(FrameBuffer.messageFrame(data));
+                }
+            } else {
+                this.socket.write(FrameBuffer.messageFrame(data));
+            }
+        }
+    }
 
+    public sendOnOpen(data) {
         this.socket.on("connect", () => {
             if (this.CONNECTION_STATE === this.OPEN) {
                 this.socket.write(FrameBuffer.messageFrame(data));
@@ -240,4 +241,5 @@ const payload = JSON.stringify({
     },
 });
 
-yenSocket.send(payload);
+yenSocket.sendOnOpen(payload);
+
