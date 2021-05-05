@@ -20,26 +20,11 @@ const modules = {
   "net": net
 };
 
-function InStream() {
-    stream.Readable.call(this);
-}
-
-util.inherits(InStream, stream.Readable);
-
-InStream.prototype._read = function () {}
-
-InStream.prototype.addData = function (data) {
-    this.push(data)
-}
-
-InStream.prototype.end = function () {
-    this.push(null)
-}
-
 class YenSocket extends EventEmitter {
     declare socket: net.Socket;
     declare path: string;
     declare url: URL;
+    declare server: null;
 
     // Headers and request options
     declare WSHeaders;
@@ -64,7 +49,7 @@ class YenSocket extends EventEmitter {
         });
 
         this.socket.once("readable", () => {
-            console.log(this.socket.read().toString());
+            readHandshake(this.socket.read(), this.socket, this);
         });
 
         this.socket.on("data", data => {
@@ -109,6 +94,37 @@ class YenSocket extends EventEmitter {
         if (protocol.equals("wss:")) return "tls";
         else return "net";
     }
+}
+
+const readHandshake = function(buffer: Buffer, socket, cs?: YenSocket) {
+    let found = false, i, data;
+
+    // Do the handshake and try to connect
+    if (buffer.length > 2097152) {
+        // Handles the error(s) for handshakes that are too large
+        if (cs.server) {
+            socket.end(`HTTP/1.1 400 Bad Request` + `\r\n\r\n`);
+        } else {
+            socket.end();
+            socket.emit('error', "The handshake is too large.");
+        }
+        return false;
+    }
+
+    // Look for for '\r\n\r\n'
+    for (i = 0; i < buffer.length - 3; i++) {
+        if (buffer[i] === 13 && buffer[i + 2] === 13 && buffer[i + 1] === 10 && buffer[i + 3] === 10) {
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        return false;
+    }
+
+    data = buffer.slice(0, i + 4).toString().split('\r\n');
+    return data;
 }
 
 const yenSocket = new YenSocket("wss://gateway.discord.gg:443?v=8&encoding=json");
