@@ -125,6 +125,6 @@ const readHandshake = function(buffer: Buffer, socket, cs?: YenSocket) {
 
     data = buffer.slice(0, i + 4).toString().split('\r\n');
     return data;
-}
+};
 
 const yenSocket = new YenSocket("wss://gateway.discord.gg:443?v=8&encoding=json");
