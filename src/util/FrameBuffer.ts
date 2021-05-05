@@ -1,4 +1,5 @@
 import { BASE_BUFFER } from "./constants/Constants";
+import { readHandshake, noop } from "../connect/YenSocket";
 
 export function generateMeta(fin, op, masked, payload): Buffer {
     const length = payload.length;
@@ -59,6 +60,11 @@ export function decode(socket, buffer, frameBuffer = null) {
     frameBuffer = null;
 
     this.socket.on('data', data => {
+        const handshakeData = readHandshake(data, this.socket, this);
+        if (handshakeData && handshakeData[0]?.equals('HTTP/1.1 101 Switching Protocols')) {
+            return noop();
+        }
+
         buffer = Buffer.concat([buffer, data], buffer.length + data.length);
 
         if (buffer.length > 2) {
