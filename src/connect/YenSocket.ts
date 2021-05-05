@@ -5,7 +5,7 @@ import { HandleURL } from "../util/HandleURL";
 import { Options } from "../util/Interfaces";
 import { URL } from "url";
 import { createExpectedKey, generateSecWebSocketKey } from "../util/GenerateKey";
-import * as FrameBuffer from "../util/FrameBuffer";
+import * as FrameBuffer from "./util/FrameBuffer";
 import { BASE_BUFFER } from "../util/constants/Constants";
 import * as Constants from "../util/constants/Constants";
 import "../util/Utilities";
@@ -55,15 +55,17 @@ class YenSocket extends EventEmitter {
         this.CONNECTION_STATE = this.CONNECTING;
 
         this.path = this.WSOptions.path;
-
         this.socket.on("connect", () => {
             this.CONNECTION_STATE = this.OPEN;
+            this.emit("open");
             this.initiateHandshake(this.WSOptions.hostname, this.WSHeaders["Sec-WebSocket-Key"]);
         });
 
         this.socket.once("readable", () => {
             const handshakeData = readHandshake(this.socket.read(), this.socket, this);
-            validateHandshake(handshakeData, this.WSHeaders["Sec-WebSocket-Key"]);
+            if (handshakeData && handshakeData[0]?.equals('HTTP/1.1 101 Switching Protocols')) {
+                validateHandshake(handshakeData, this.WSHeaders["Sec-WebSocket-Key"]);
+            }
         });
 
         this.socket.on("data", data => {
@@ -117,9 +119,24 @@ class YenSocket extends EventEmitter {
     }
 
     public send(data, json: boolean = false) {
-        if (this.CONNECTION_STATE === this.OPEN) {
+        // if (this.CONNECTION_STATE === this.OPEN) {
+        //     if (json) {
+        //         if (typeof data === "object") {
+        //             console.log(2);
+        //             this.socket.write(FrameBuffer.messageFrame(JSON.stringify(data) || data.toString()));
+        //         } else {
+        //             this.socket.write(FrameBuffer.messageFrame(data));
+        //         }
+        //     } else {
+        //         this.socket.write(FrameBuffer.messageFrame(data));
+        //     }
+        // }
 
-        }
+        this.socket.on("connect", () => {
+            if (this.CONNECTION_STATE === this.OPEN) {
+                this.socket.write(FrameBuffer.messageFrame(data));
+            }
+        });
     }
 }
 
@@ -203,7 +220,24 @@ export {
     noop
 };
 
+import { token } from  "../../cfg";
 const yenSocket = new YenSocket("wss://gateway.discord.gg:443?v=8&encoding=json");
+
 yenSocket.on("message", message => {
     console.log(message);
 });
+
+const payload = JSON.stringify({
+    op: 2,
+    d: {
+        token: `Bot ${token}`,
+        intents: 513,
+        properties: {
+            $os: "Linux",
+            $browser: "Discord Desktop",
+            $device: "PC",
+        },
+    },
+});
+
+yenSocket.send(payload);
