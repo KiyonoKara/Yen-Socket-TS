@@ -79,10 +79,25 @@ class YenSocketTS extends EventEmitter {
 const YS = new YenSocketTS('wss://gateway.discord.gg:443?v=8&encoding=json');
 //const YS = new YenSocketTS("wss://demo.websocket.me/v3/channel_1?api_key=oCdCMcMPQpbvNjUIzqtvF1d2X2okWpDQj4AwARJuAgtjhzKxVEjQU6IdCjwm&notify_self");
 YS.on('open', () => {
-    YS.send(JSON.stringify({ data: "Test data" }));
 });
 YS.on('message', m => {
-    console.log(m);
+    console.log(JSON.parse(m));
 });
 
-YS.close();
+import { token } from "../../ext-config/cfg";
+
+const payload = JSON.stringify({
+    op: 2,
+    d: {
+        token: `Bot ${token}`,
+        intents: 513,
+        properties: {
+            $os: "Linux",
+            $browser: "Discord Desktop",
+            $device: "PC",
+        },
+    },
+});
+
+
+YS.send(payload);
