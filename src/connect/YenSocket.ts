@@ -53,10 +53,12 @@ class YenSocket extends EventEmitter {
         this.OPEN = 1;
         this.CLOSING = 2;
         this.CLOSED = 3;
+        this.CONNECTION_STATE = this.CONNECTING;
 
         this.path = this.WSOptions.path;
 
         this.socket.on("connect", () => {
+            this.CONNECTION_STATE = this.OPEN;
             this.initiateHandshake(this.WSOptions.hostname, this.WSHeaders["Sec-WebSocket-Key"]);
         });
 
@@ -76,7 +78,9 @@ class YenSocket extends EventEmitter {
         FrameBuffer.decode(this.socket, BASE_BUFFER, frameBuffer);
 
         this.socket.on("message", message => {
-            console.log(message);
+            if (this.CONNECTION_STATE === this.OPEN) {
+                console.log(message);
+            }
         });
 
         this.socket.on("error", error => {
