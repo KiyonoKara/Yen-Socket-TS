@@ -49,7 +49,8 @@ class YenSocket extends EventEmitter {
         });
 
         this.socket.once("readable", () => {
-            readHandshake(this.socket.read(), this.socket, this);
+            const handshakeData = readHandshake(this.socket.read(), this.socket, this);
+            validateHandshake(handshakeData, this.WSHeaders["Sec-WebSocket-Key"]);
         });
 
         this.socket.on("data", data => {
@@ -126,5 +127,42 @@ const readHandshake = function(buffer: Buffer, socket, cs?: YenSocket) {
     data = buffer.slice(0, i + 4).toString().split('\r\n');
     return data;
 };
+
+const validateHandshake = function(handshake: string[], wsKey?) {
+    let headers: any = {}, key;
+
+    if (handshake.length < 4) {
+        throw new Error("Invalid handshake, the handshake was too small.");
+    }
+
+    if (!handshake[0].match(/^HTTP\/\d\.\d 101( .*)?$/i)) {
+        throw new Error("Invalid handshake, the first line is invalid.");
+    }
+
+    // Gets all headers
+    for (let i = 1; i < handshake.length; i++) {
+        let match = handshake[i].match(/^([a-z-]+): (.+)$/i);
+        if (match) {
+            headers[match[1].toLowerCase()] = match[2];
+        }
+    }
+
+    if (!headers['upgrade'] || !headers['sec-websocket-accept'] || !headers['connection']) {
+        throw new Error("Invalid handshake, required header(s) are missing.");
+    }
+
+    if (headers['upgrade']?.toLowerCase() !== "websocket" || headers['connection']?.toLowerCase().split(/\s*,\s*/).indexOf('upgrade') === -1) {
+        throw new Error("Invalid handshake, invalid Upgrade/Connection header(s).");
+    }
+
+    // Validate the server key
+    key = headers['sec-websocket-accept'];
+    const expectedKey = createExpectedKey("sha1", "base64", wsKey);
+    if (!key.equals(expectedKey)) {
+        throw new Error("The sec-websocket-accept header returned a mismatched key.");
+    }
+
+    return true;
+}
 
 const yenSocket = new YenSocket("wss://gateway.discord.gg:443?v=8&encoding=json");
