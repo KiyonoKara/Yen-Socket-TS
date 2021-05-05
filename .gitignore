@@ -2,6 +2,7 @@
 .idea
 .vscode
 .DS_Store
+/cfg.ts
 
 # Project files & folders
 
