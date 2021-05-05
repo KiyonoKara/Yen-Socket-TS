@@ -73,11 +73,11 @@ class YenSocket extends EventEmitter {
             WebSocketHeaders = this.WSHeaders;
         }
 
-        const requestString = this.createStrRequest(`GET ${this.WSOptions.path} HTTP/1.1`, WebSocketHeaders);
+        const requestString = YenSocket.createStrRequest(`GET ${this.WSOptions.path} HTTP/1.1`, WebSocketHeaders);
         this.socket.write(requestString);
     }
 
-     private createStrRequest(rawRequestLine, headers) {
+     private static createStrRequest(rawRequestLine, headers) {
         let headersString = rawRequestLine + '\r\n';
 
         for (let key in headers) {
