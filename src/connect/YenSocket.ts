@@ -52,7 +52,7 @@ class YenSocket extends EventEmitter {
 
         this.socket.on("data", data => {
             const handshakeData = readHandshake(data, this.socket, this);
-            if (handshakeData[0]?.equals('HTTP/1.1 101 Switching Protocols')) {
+            if (handshakeData && handshakeData[0]?.equals('HTTP/1.1 101 Switching Protocols')) {
                 noop();
             }
         });
