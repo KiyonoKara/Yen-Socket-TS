@@ -116,8 +116,10 @@ class YenSocket extends EventEmitter {
         return headersString + "\r\n";
     }
 
-    public send(data) {
+    public send(data, json: boolean = false) {
+        if (this.CONNECTION_STATE === this.OPEN) {
 
+        }
     }
 }
 
