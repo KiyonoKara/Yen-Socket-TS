@@ -4,14 +4,11 @@ import { EventEmitter } from "events";
 import { HandleURL } from "../util/HandleURL";
 import { Options } from "../util/Interfaces";
 import { URL } from "url";
-import {createExpectedKey, generateSecWebSocketKey} from "../util/GenerateKey";
+import { createExpectedKey, generateSecWebSocketKey } from "../util/GenerateKey";
 import * as FrameBuffer from "../util/FrameBuffer";
 import { BASE_BUFFER } from "../util/constants/Constants";
 import * as Constants from "../util/constants/Constants";
 import "../util/Utilities";
-import * as util from "util";
-import * as stream from "stream";
-import * as http from "http";
 
 const handleURL = new HandleURL();
 
