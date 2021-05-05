@@ -220,7 +220,7 @@ export {
     noop
 };
 
-import { token } from  "../../cfg";
+import { token } from "../../ext-config/cfg";
 const yenSocket = new YenSocket("wss://gateway.discord.gg:443?v=8&encoding=json");
 
 yenSocket.on("message", message => {
