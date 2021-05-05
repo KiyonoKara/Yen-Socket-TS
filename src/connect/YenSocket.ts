@@ -125,7 +125,7 @@ const readHandshake = function(buffer: Buffer, socket, cs?: YenSocket) {
     return data;
 };
 
-const validateHandshake = function(handshake: string[], wsKey?) {
+const validateHandshake = function(handshake: string[], wsKey?: string) {
     let headers: any = {}, key;
 
     if (handshake.length < 4) {
