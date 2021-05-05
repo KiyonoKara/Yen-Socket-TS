@@ -63,12 +63,16 @@ class YenSocket extends EventEmitter {
             this.initiateHandshake(this.WSOptions.hostname, this.WSHeaders["Sec-WebSocket-Key"]);
         });
 
-        this.socket.on("readable", () => {
-            console.log(this.socket.read());
+        this.socket.once("readable", () => {
+            console.log(this.socket.read().toString());
+        });
+
+        this.socket.on("data", data => {
+            //console.log(data.toString());
         });
 
         this.socket.on("error", error => {
-            console.log(error);
+            console.error(error);
         });
     }
 
