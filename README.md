@@ -1,10 +1,11 @@
-# Yen Socket
-A sufficient implementation for WebSockets which can connect to `ws`/`wss` URLs, open connections, send data, and close those connections. This implementation is free of any external modules that require downloading or package managing. With this implementation relying on no external modules, this is light-weight and clients do not need to worry about other dependencies.
+# Yen Socket TS
+A sufficient implementation for WebSockets which can connect to `ws`/`wss` URLs, open connections, send data, and close those connections. This implementation is free of any external modules that require downloading or package managing. With this implementation relying on no external modules, this is light-weight and clients do not need to worry about other dependencies. Also in TypeScript.
 
 ## Overview
-This implementation is mainly designed for sending JSON payloads and connecting to gateways that usually guarantee JSON data. This repository aims to make a decent to excellent implementation for interacting with WebSockets for simplicity.
+This __TypeScript__ implementation is mainly designed for sending JSON payloads and connecting to gateways that usually guarantee JSON data. This repository aims to make a decent to excellent implementation for interacting with WebSockets for simplicity.
 
 ## Author Notes
+Repository is a TypeScript version of the original Yen Socket which has different approaches to structuring, there is still lots of staging going on for this repository.   
 This repository could use a little more structuring and could be cleaned up so more attributes of the WebSocket interactions are more accessible and usable.
 
 ## Mini-Documentation
@@ -12,7 +13,7 @@ General example(s) for establishing and interacting with the WebSocket connectio
 
 #### Creating the object of the class.
 ```js
-const yenSocket = new YenSocket("wss://websocket-example-url.net/");
+const yenSocket: YenSocket = new YenSocket("wss://websocket-example-url.net/");
 ```       
 
 #### Opening the connection
