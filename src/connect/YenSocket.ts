@@ -162,6 +162,11 @@ class YenSocket extends EventEmitter {
     }
 }
 
+/**
+ * Basic logic for checking if protocol is suiting for NET or TLS
+ * @param {string} protocol - wss = tls, ws = net
+ * @returns {string}
+ */
 const defineNETorTLS = function(protocol: string): string {
     if (protocol.equals("wss:")) return "tls";
     else return "net";
