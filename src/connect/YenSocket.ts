@@ -198,6 +198,12 @@ const readHandshake = function(buffer: Buffer, socket, cs?: YenSocket) {
     return data;
 };
 
+/**
+ * Validates the handshake
+ * @param {string | any} handshake
+ * @param {string} wsKey
+ * @returns {boolean} Returns true if the handshake is successful, false if it is not successful, and throws an error
+ */
 const validateHandshake = function(handshake: string[], wsKey?: string) {
     let headers: any = {}, key;
 
