@@ -167,6 +167,13 @@ const defineNETorTLS = function(protocol: string): string {
     else return "net";
 };
 
+/**
+ * Read the incoming handshake, only reads the opening handshake
+ * @param buffer - Buffer data
+ * @param socket - The socket for emitting events or ending its connection
+ * @param cs - Instance of the class for its instance variables
+ * @returns {string | buffer} Returns handshake data
+ */
 const readHandshake = function(buffer: Buffer, socket, cs?: YenSocket) {
     let found = false, i, data;
 
