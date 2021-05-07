@@ -12,11 +12,15 @@ import "../util/Utilities";
 
 const handleURL = new HandleURL();
 
+// Modules for referencing
 const modules = {
   "tls": tls,
   "net": net
 };
 
+/**
+ * YenSocket class
+ */
 class YenSocket extends EventEmitter {
     declare socket: net.Socket;
     declare path: string;
