@@ -144,12 +144,24 @@ class YenSocket extends EventEmitter {
         });
     }
 
+    /**
+     * Closes a WS connection without regard any special events
+     * @param {number} code - Status code for closing the connection
+     * @param {string} reason - Close reason
+     * @param {boolean} masked - Should usually be masked, true
+     */
     public close(code: number = 1000, reason?: string, masked: boolean = true) {
         if (this.CONNECTION_STATE === this.OPEN) {
             this.socket.write(FrameBuffer.closeFrame(code, reason || undefined, masked));
         }
     }
 
+    /**
+     * Closes a WS connection on a message event instead of connection event
+     * @param {number} code - Status code for closing the connection
+     * @param {string} reason - Close reason
+     * @param {boolean} masked - Should usually be masked
+     */
     public onclose(code: number = 1000, reason?: string, masked: boolean = true) {
         this.on("message", () => {
             this.close(code, reason, masked);
